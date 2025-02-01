@@ -15,3 +15,8 @@ declare module "user_dashboard/UserButton" {
   const Button: React.FC;
   export default Button;
 }
+
+declare module "*.png" {
+  const value: string;
+  export default value;
+}

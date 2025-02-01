@@ -24,6 +24,17 @@ module.exports = {
         loader: "ts-loader",
         exclude: /node_modules/,
       },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(png|jpe?g|gif|ico)$/i,
+        type: "asset/resource",
+        generator: {
+          filename: "assets/[name].[hash][ext]",
+        },
+      },
     ],
   },
   plugins: [
