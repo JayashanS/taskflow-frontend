@@ -10,6 +10,7 @@ module.exports = {
     static: {
       directory: path.join(__dirname, "dist"),
     },
+    open: false,
   },
   output: {
     publicPath: "http://localhost:4003/",
