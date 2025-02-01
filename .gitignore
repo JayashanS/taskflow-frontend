@@ -1,0 +1,17 @@
+# node modules
+taskflow-host/node_modules/
+taskflow-mfe-admin-dashboard/node_modules/
+taskflow-mfe-task-management/node_modules/
+taskflow-mfe-user-dashboard/node_modules/
+
+# Build output 
+taskflow-host/dist/
+taskflow-mfe-admin-dashboard/dist/
+taskflow-mfe-task-management/dist/
+taskflow-mfe-user-dashboard/dist/
+
+# .envs
+taskflow-host/.env
+taskflow-mfe-admin-dashboard/.env
+taskflow-mfe-task-management/.env
+taskflow-mfe-user-dashboard/.env
