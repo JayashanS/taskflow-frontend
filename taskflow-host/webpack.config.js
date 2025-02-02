@@ -7,9 +7,14 @@ module.exports = {
   mode: "development",
   devServer: {
     port: 4000,
-    static: {
-      directory: path.join(__dirname, "dist"),
-    },
+    static: [
+      {
+        directory: path.join(__dirname, "dist"),
+      },
+      {
+        directory: path.join(__dirname, "public"),
+      },
+    ],
   },
   output: {
     publicPath: "http://localhost:4000/",
@@ -52,6 +57,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
+      favicon: "./public/favicon.ico",
     }),
   ],
 };

@@ -1,5 +1,5 @@
 import {
-  HashRouter as Router, // Changed from BrowserRouter to HashRouter
+  HashRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -7,22 +7,33 @@ import {
 import Dashboard from "../layout/Dashboard";
 import UsersPage from "../pages/UsersPage";
 import TasksPage from "../pages/TasksPage";
+import LoginPage from "../pages/LoginPage";
+import Unauthorized from "../pages/Unauthorized";
+import PrivateRoute from "./PrivateRoute";
+import AdminRoute from "./AdminRoute";
 
 const RoutesConfig = () => {
   return (
     <Router>
       <Routes>
-        <Route element={<Dashboard />}>
-          {/* Redirect root to users page */}
-          <Route index element={<Navigate to="/users" replace />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
-          {/* Main routes */}
-          <Route path="users" element={<UsersPage />} />
-          <Route path="tasks" element={<TasksPage />} />
+        {/* Protected Routes */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/" element={<Navigate to="/users" replace />} />
 
-          {/* Handle invalid URLs */}
-          <Route path="*" element={<Navigate to="/users" replace />} />
+          {/* Dashboard Layout */}
+          <Route element={<Dashboard />}>
+            <Route element={<AdminRoute />}>
+              <Route path="/users" element={<UsersPage />} />
+              <Route path="/tasks" element={<TasksPage />} />
+            </Route>
+          </Route>
         </Route>
+
+        {/* Catch-all */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

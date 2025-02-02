@@ -1,20 +1,41 @@
 import React from "react";
-import { Layout, Menu } from "antd";
-import { UserOutlined, FileTextOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { Layout, Menu, Avatar, Dropdown } from "antd";
+import {
+  UserOutlined,
+  FileTextOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { RootState } from "../store/store";
+import { logout } from "../store/slices/authSlice";
 import "./Dashboard.css";
 import logo from "../assets/logo.png";
 
 const { Header, Sider, Content } = Layout;
 
 const Dashboard: React.FC = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
   const location = useLocation();
+  const menu = (
+    <Menu>
+      <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
+        Log Out
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <Layout>
       <Header
         style={{
           display: "flex",
+          justifyContent: "space-between",
           alignItems: "center",
           color: "black",
           backgroundColor: "white",
@@ -23,17 +44,29 @@ const Dashboard: React.FC = () => {
         }}
         className="responsive-padding"
       >
-        <img
-          src={logo}
-          alt="Logo"
-          style={{
-            width: 40,
-            height: 40,
-            marginRight: "10px",
-            marginLeft: "5px",
-          }}
-        />
-        <span style={{ marginLeft: "5px" }}>Task Flow</span>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <img
+            src={logo}
+            alt="Logo"
+            style={{
+              width: 40,
+              height: 40,
+              marginRight: "10px",
+              marginLeft: "5px",
+            }}
+          />
+          <span style={{ marginLeft: "5px" }}>Task Flow</span>
+        </div>
+        <div>
+          <Dropdown overlay={menu} trigger={["click"]}>
+            <Avatar
+              size={40}
+              style={{ backgroundColor: "#f0dbff", color: "#9003fc" }}
+            >
+              {user?.email ? user.email.charAt(0).toUpperCase() : ""}
+            </Avatar>
+          </Dropdown>
+        </div>
       </Header>
 
       <Layout
@@ -63,7 +96,7 @@ const Dashboard: React.FC = () => {
           </Menu>
         </Sider>
 
-        <Content style={{ background: "#fcc", padding: 10 }}>
+        <Content style={{ background: "#fff", padding: 10 }}>
           <Outlet />
         </Content>
       </Layout>
