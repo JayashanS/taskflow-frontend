@@ -3,7 +3,7 @@ import UserTable from "../components/UserTable";
 const UsersPage: React.FC = () => {
   return (
     <div>
-      <UserTable></UserTable>
+      <UserTable />
     </div>
   );
 };

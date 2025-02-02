@@ -1,98 +1,78 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Space, Table, Switch, Button } from "antd";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  CheckCircleOutlined,
-} from "@ant-design/icons";
-import type { TableProps } from "antd";
+import React, { useEffect, useState, useMemo } from "react";
+import { Table } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers } from "../store/slices/userSlice";
+import { RootState, AppDispatch } from "../store/store";
 
-interface DataType {
-  key: string;
-  name: string;
-  taskCount: number;
-  telephone: string;
-  enabled: boolean;
-}
+const UserTable = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { usersByPage, totalRecords, loading } = useSelector(
+    (state: RootState) => state.users
+  );
 
-const columns: TableProps<DataType>["columns"] = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: "Task Count",
-    dataIndex: "taskCount",
-    key: "taskCount",
-  },
-  {
-    title: "Telephone",
-    dataIndex: "telephone",
-    key: "telephone",
-  },
-  {
-    title: "Actions",
-    key: "actions",
-    render: (_, record) => (
-      <Space size="middle">
-        <Button icon={<EditOutlined />} type="link" />
-        <Button icon={<DeleteOutlined />} type="link" danger />
-        <Switch
-          checked={record.enabled}
-          onChange={(checked) =>
-            console.log(`Switch to ${checked ? "Enabled" : "Disabled"}`)
-          }
-          checkedChildren={<CheckCircleOutlined />}
-          unCheckedChildren={<CheckCircleOutlined />}
-        />
-      </Space>
-    ),
-  },
-];
-
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    taskCount: 5,
-    telephone: "123-456-7890",
-    enabled: true,
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    taskCount: 3,
-    telephone: "987-654-3210",
-    enabled: false,
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    taskCount: 7,
-    telephone: "555-555-5555",
-    enabled: true,
-  },
-];
-
-const UserTable: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState(1);
   const [tableHeight, setTableHeight] = useState(window.innerHeight - 200);
+  //const pageSize = useMemo(() => Math.floor(tableHeight / 55), [tableHeight]);
+  const [pageSize, setPageSize] = useState(Math.floor(tableHeight / 55));
 
   useEffect(() => {
-    const updateTableHeight = () => setTableHeight(window.innerHeight - 200);
+    if (!usersByPage[currentPage]) {
+      dispatch(fetchUsers({ page: currentPage, limit: pageSize }));
+    }
+  }, [currentPage, pageSize, dispatch, usersByPage]);
+
+  useEffect(() => {
+    const updateTableHeight = () => {
+      setTableHeight(window.innerHeight - 200);
+    };
+
     window.addEventListener("resize", updateTableHeight);
+    updateTableHeight();
     return () => window.removeEventListener("resize", updateTableHeight);
   }, []);
 
-  const pageSize = useMemo(() => Math.floor(tableHeight / 55), [tableHeight]);
+  useEffect(() => {
+    setPageSize(Math.floor(tableHeight / 55));
+  }, [tableHeight]);
+
+  const handleTableChange = (pagination: any) => {
+    const { current, pageSize } = pagination;
+    setCurrentPage(current);
+
+    if (!usersByPage[current]) {
+      dispatch(fetchUsers({ page: current, limit: pageSize }));
+    }
+  };
 
   return (
-    <Table<DataType>
-      columns={columns}
-      dataSource={data}
-      pagination={{ pageSize, responsive: true }}
-      scroll={{ y: tableHeight }}
+    <Table
+      columns={[
+        {
+          title: "User Name",
+          dataIndex: "username",
+          key: "username",
+        },
+        {
+          title: "Email",
+          dataIndex: "email",
+          key: "email",
+        },
+      ]}
+      dataSource={usersByPage[currentPage] || []}
+      pagination={{
+        total: totalRecords,
+        pageSize,
+        current: currentPage,
+        showSizeChanger: true,
+        pageSizeOptions: ["10", "20", "50"],
+        onChange: (page, size) => {
+          setCurrentPage(page);
+          setTableHeight(window.innerHeight - 200);
+        },
+      }}
+      loading={loading}
+      onChange={handleTableChange}
+      rowKey="id"
     />
   );
 };
