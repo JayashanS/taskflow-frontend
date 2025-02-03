@@ -5,37 +5,18 @@
     overflow: hidden;
   }
   
+.highlight-row {
+  background-color: #f6ebff !important; 
+  transition: background-color 0.3s ease; 
+}
 
-  /* html, body, #root {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    font-family: Arial, sans-serif;
-    background-color: #f0f2f5; 
-  }
-  
+.ant-input {
+  border-radius: 5px; 
+}
+.ant-input-search {
+  border-radius: 5px;
+}
+.ant-input-password {
+  border-radius: 5px;
+}
 
-  button, a {
-    outline: none;
-  }
-  
-  
-  .ant-layout {
-    min-height: 100vh;
-  }
-  
- 
-  .ant-layout-header {
-    padding: 0 20px;
-  }
-  
-
-  .ant-layout-sider {
-    height: 100vh;
-  }
-  
- 
-  .ant-layout-content {
-    overflow: auto;
-  }
-   */

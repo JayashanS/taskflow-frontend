@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "./components/AdminButton";
+import Button from "./components/Map";
 
 const App: React.FC = () => {
   return (

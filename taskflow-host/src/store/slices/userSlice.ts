@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { getUsers } from "../../services/userService";
+import {
+  getUsers,
+  updateUserAPI,
+  deleteUserAPI,
+} from "../../services/userService";
+import { User } from "../../interfaces/userInterface";
 
 interface UserState {
   usersByPage: Record<number, any[]>;
@@ -15,12 +20,27 @@ const initialState: UserState = {
   error: null,
 };
 
-// Fetch users with pagination
 export const fetchUsers = createAsyncThunk(
   "users/fetchUsers",
   async ({ page, limit }: { page: number; limit: number }) => {
     const response = await getUsers(page, limit);
     return { page, users: response.users, totalRecords: response.totalRecords };
+  }
+);
+
+export const editUser = createAsyncThunk(
+  "users/editUser",
+  async (updatedUser: User) => {
+    await updateUserAPI(updatedUser);
+    return updatedUser;
+  }
+);
+
+export const deleteUser = createAsyncThunk(
+  "users/deleteUser",
+  async (userId: string) => {
+    await deleteUserAPI(userId);
+    return userId;
   }
 );
 
@@ -46,12 +66,27 @@ const userSlice = createSlice({
         ) => {
           state.loading = false;
           state.usersByPage[action.payload.page] = action.payload.users;
-          state.totalRecords = action.payload.totalRecords; // Store total records count
+          state.totalRecords = action.payload.totalRecords;
         }
       )
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch users";
+      })
+      .addCase(editUser.fulfilled, (state, action: PayloadAction<User>) => {
+        Object.keys(state.usersByPage).forEach((page) => {
+          state.usersByPage[Number(page)] = state.usersByPage[Number(page)].map(
+            (user) => (user._id === action.payload._id ? action.payload : user)
+          );
+        });
+      })
+      .addCase(deleteUser.fulfilled, (state, action: PayloadAction<string>) => {
+        Object.keys(state.usersByPage).forEach((page) => {
+          state.usersByPage[Number(page)] = state.usersByPage[
+            Number(page)
+          ].filter((user) => user._id !== action.payload);
+        });
+        state.totalRecords -= 1;
       });
   },
 });
