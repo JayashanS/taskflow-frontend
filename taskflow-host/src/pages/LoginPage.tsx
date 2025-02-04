@@ -8,12 +8,14 @@ import {
   InfoCircleOutlined,
 } from "@ant-design/icons";
 import { Input, Button, Tooltip, notification } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     setLoading(true);
@@ -80,6 +82,7 @@ const LoginPage: React.FC = () => {
       >
         Log in
       </Button>
+      <button onClick={() => navigate("/welcome")}>Go to About</button>
     </div>
   );
 };

@@ -32,4 +32,11 @@ export interface UserFormProps {
   onSubmit: (data: any) => void;
 }
 
+export interface AddressPickerProps {
+  open: boolean;
+  address: string;
+  handleClose: () => void;
+  setAddress: (address: string) => void;
+}
+
 export type Mode = "view" | "create" | "edit";

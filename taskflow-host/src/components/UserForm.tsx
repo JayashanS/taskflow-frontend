@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store/store";
+import { createUser, editUser } from "../store/slices/userSlice";
 import { Form, Input, Button, Select, message } from "antd";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, PushpinOutlined } from "@ant-design/icons";
 import { UserFormProps } from "../interfaces/userInterface";
+import AddressPicker from "./AddressPicker";
 
-const roles = ["Admin", "User"];
+const roles = ["admin", "user"];
 
 const UserForm: React.FC<UserFormProps> = ({
   mode,
@@ -11,12 +15,16 @@ const UserForm: React.FC<UserFormProps> = ({
   setMode,
   onSubmit,
 }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const [form] = Form.useForm();
   const [password, setPassword] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedAddress, setSelectedAddress] = useState<string>("");
 
   useEffect(() => {
     if (mode === "edit" && data) {
       form.setFieldsValue(data);
+      setSelectedAddress(data.address);
     } else {
       setPassword(generatePassword());
     }
@@ -34,16 +42,29 @@ const UserForm: React.FC<UserFormProps> = ({
   };
 
   const handleSubmit = async (values: any) => {
+    values.address = selectedAddress;
     if (mode === "create") {
       values.password = password;
+      dispatch(createUser(values));
+    } else if (mode === "edit" && data) {
+      values._id = data._id;
+      dispatch(editUser(values));
     }
 
-    onSubmit(values);
     message.success(
       `${mode === "create" ? "User created" : "User updated"} successfully!`
     );
     form.resetFields();
+    setMode("view");
   };
+
+  const handleAddressButtonClick = () => {
+    setIsModalOpen(true);
+  };
+
+  useEffect(() => {
+    form.setFieldsValue({ address: selectedAddress });
+  }, [selectedAddress]);
 
   return (
     <div
@@ -124,7 +145,17 @@ const UserForm: React.FC<UserFormProps> = ({
             name="address"
             rules={[{ required: true, message: "Please input the address!" }]}
           >
-            <Input />
+            <Input
+              value={selectedAddress}
+              suffix={
+                <Button
+                  type="link"
+                  icon={<PushpinOutlined />}
+                  onClick={handleAddressButtonClick}
+                  style={{ padding: 0 }}
+                />
+              }
+            />
           </Form.Item>
           <Form.Item
             label="Role"
@@ -152,6 +183,12 @@ const UserForm: React.FC<UserFormProps> = ({
             </Button>
           </Form.Item>
         </Form>
+        <AddressPicker
+          open={isModalOpen}
+          address={selectedAddress}
+          handleClose={() => setIsModalOpen(false)}
+          setAddress={setSelectedAddress}
+        />
       </div>
     </div>
   );

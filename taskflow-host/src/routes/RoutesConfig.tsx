@@ -1,5 +1,5 @@
 import {
-  HashRouter as Router,
+  BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -8,6 +8,7 @@ import Dashboard from "../layout/Dashboard";
 import UsersPage from "../pages/UsersPage";
 import TasksPage from "../pages/TasksPage";
 import LoginPage from "../pages/LoginPage";
+import WelcomePage from "../pages/WelcomePage";
 import Unauthorized from "../pages/Unauthorized";
 import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
@@ -17,6 +18,7 @@ const RoutesConfig = () => {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/welcome/*" element={<WelcomePage />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
         {/* Protected Routes */}
@@ -31,9 +33,6 @@ const RoutesConfig = () => {
             </Route>
           </Route>
         </Route>
-
-        {/* Catch-all */}
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

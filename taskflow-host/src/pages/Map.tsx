@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal, Input } from "antd";
 import "ol/ol.css";
 import { Map } from "ol";
 import TileLayer from "ol/layer/Tile";
@@ -11,14 +10,10 @@ import { Feature } from "ol";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
-import { AddressPickerProps } from "../interfaces/userInterface";
 
-const GoogleMap: React.FC<AddressPickerProps> = ({
-  open,
-  address,
-  handleClose,
-  setAddress,
-}) => {
+const GoogleMap: React.FC = () => {
+  const [address, setAddress] = useState<string>("");
+
   const fetchAddress = async (lat: number, lon: number) => {
     const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}`;
@@ -41,8 +36,6 @@ const GoogleMap: React.FC<AddressPickerProps> = ({
   };
 
   useEffect(() => {
-    if (!open) return; // Only initialize map when the modal is open
-
     const googleLayer = new TileLayer({
       source: new XYZ({
         url: "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}",
@@ -53,12 +46,12 @@ const GoogleMap: React.FC<AddressPickerProps> = ({
       target: "map",
       layers: [googleLayer],
       view: new View({
-        center: fromLonLat([79.9, 6.9271]),
-        zoom: 12,
+        center: fromLonLat([80.7718, 7.8731]),
+        zoom: 7,
       }),
     });
 
-    const marker = new Feature(new Point(fromLonLat([79.9, 6.9271])));
+    const marker = new Feature(new Point(fromLonLat([80.7718, 7.8731])));
     marker.setStyle(
       new Style({
         image: new CircleStyle({
@@ -80,42 +73,27 @@ const GoogleMap: React.FC<AddressPickerProps> = ({
       const coordinates = event.coordinate;
       const [lon, lat] = toLonLat(coordinates);
       fetchAddress(lat, lon);
+
       marker.setGeometry(new Point(coordinates));
     });
 
     return () => map.setTarget(undefined);
-  }, [open]);
+  }, []);
 
   return (
-    <Modal
-      title="Pick a Location"
-      open={open}
-      footer={null}
-      onCancel={handleClose}
-    >
-      <div>
-        <div>
-          <Input
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Click on the map to get the address"
-            style={{ width: "100%", marginBottom: "8px" }}
-          />
-        </div>
-        <div id="map" style={{ width: "50vw", height: "50vh" }}></div>
+    <div>
+      <div id="map" style={{ width: "100%", height: "80vh" }}></div>
+      <div style={{ padding: "10px" }}>
+        <label>Address:</label>
+        <input
+          type="text"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          placeholder="Click on the map to get the address"
+          style={{ width: "100%", padding: "8px", marginTop: "8px" }}
+        />
       </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginTop: "16px",
-        }}
-      >
-        <Button key="ok" type="primary" onClick={handleClose}>
-          Add
-        </Button>
-      </div>
-    </Modal>
+    </div>
   );
 };
 

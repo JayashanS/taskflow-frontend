@@ -8,14 +8,14 @@ import {
 import { User } from "../../interfaces/userInterface";
 
 interface UserState {
-  users: User[];
+  usersByPage: Record<number, any[]>;
   totalRecords: number;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: UserState = {
-  users: [],
+  usersByPage: {},
   totalRecords: 0,
   loading: false,
   error: null,
@@ -25,7 +25,7 @@ export const fetchUsers = createAsyncThunk(
   "users/fetchUsers",
   async ({ page, limit }: { page: number; limit: number }) => {
     const response = await fetchUsersAPI(page, limit);
-    return { users: response.users, totalRecords: response.totalRecords };
+    return { page, users: response.users, totalRecords: response.totalRecords };
   }
 );
 
@@ -67,10 +67,14 @@ const userSlice = createSlice({
         fetchUsers.fulfilled,
         (
           state,
-          action: PayloadAction<{ users: User[]; totalRecords: number }>
+          action: PayloadAction<{
+            page: number;
+            users: any[];
+            totalRecords: number;
+          }>
         ) => {
           state.loading = false;
-          state.users = action.payload.users;
+          state.usersByPage[action.payload.page] = action.payload.users;
           state.totalRecords = action.payload.totalRecords;
         }
       )
@@ -79,16 +83,26 @@ const userSlice = createSlice({
         state.error = action.error.message || "Failed to fetch users";
       })
       .addCase(createUser.fulfilled, (state, action: PayloadAction<User>) => {
-        state.users.unshift(action.payload);
+        if (state.usersByPage[1]) {
+          state.usersByPage[1].unshift(action.payload);
+        } else {
+          state.usersByPage[1] = [action.payload];
+        }
         state.totalRecords += 1;
       })
       .addCase(editUser.fulfilled, (state, action: PayloadAction<User>) => {
-        state.users = state.users.map((user) =>
-          user._id === action.payload._id ? action.payload : user
-        );
+        Object.keys(state.usersByPage).forEach((page) => {
+          state.usersByPage[Number(page)] = state.usersByPage[Number(page)].map(
+            (user) => (user._id === action.payload._id ? action.payload : user)
+          );
+        });
       })
       .addCase(deleteUser.fulfilled, (state, action: PayloadAction<string>) => {
-        state.users = state.users.filter((user) => user._id !== action.payload);
+        Object.keys(state.usersByPage).forEach((page) => {
+          state.usersByPage[Number(page)] = state.usersByPage[
+            Number(page)
+          ].filter((user) => user._id !== action.payload);
+        });
         state.totalRecords -= 1;
       });
   },

@@ -16,6 +16,7 @@ module.exports = {
         directory: path.join(__dirname, "public"),
       },
     ],
+    historyApiFallback: true,
   },
   output: {
     publicPath: "http://localhost:4000/",
@@ -36,6 +37,7 @@ module.exports = {
       },
       {
         test: /\.(png|jpe?g|gif|ico)$/i,
+        exclude: /googleapis\.com/,
         type: "asset/resource",
         generator: {
           filename: "assets/[name].[hash][ext]",

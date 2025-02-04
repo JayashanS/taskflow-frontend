@@ -3,7 +3,7 @@ import { User } from "../interfaces/userInterface";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-export const getUsers = async (page: number, limit: number) => {
+export const fetchUsersAPI = async (page: number, limit: number) => {
   const response = await axios.get(
     `${API_URL}/users/all-from?page=${page}&limit=${limit}`
   );
@@ -11,6 +11,12 @@ export const getUsers = async (page: number, limit: number) => {
     users: response.data.users,
     totalRecords: response.data.totalRecords,
   };
+};
+
+export const createUserAPI = async (user: Omit<User, "_id">) => {
+  console.log(JSON.stringify(user));
+  const response = await axios.post(`${API_URL}/users/`, user);
+  return response.data;
 };
 
 export const updateUserAPI = async (user: User) => {
@@ -21,4 +27,32 @@ export const updateUserAPI = async (user: User) => {
 export const deleteUserAPI = async (userId: string) => {
   const response = await axios.delete(`${API_URL}/users/delete/${userId}`);
   return response.data;
+};
+
+export const updatePassword = async (
+  email: string,
+  password: string,
+  otp: string
+) => {
+  try {
+    const response = await axios.post(`${API_URL}/users/reset`, {
+      email,
+      password,
+      otp,
+    });
+
+    if (response.status === 200) {
+      return { success: true, message: "Password updated successfully!" };
+    } else {
+      return {
+        success: false,
+        message: response.data.message || "Something went wrong.",
+      };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Request failed.",
+    };
+  }
 };
