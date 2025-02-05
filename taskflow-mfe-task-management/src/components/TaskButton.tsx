@@ -1,12 +1,16 @@
 import React from "react";
+import { Button, Card } from "antd";
 
-const Button: React.FC = () => {
-  console.log("Rendering Task Management Button");
+const FederatedApp: React.FC = () => {
   return (
-    <button onClick={() => alert("Hello from Task Management!")}>
-      Buttons
-    </button>
+    <div className="task-card-container">
+      <div className="task-card-head">
+        <span>hello</span>
+        <span>world</span>
+      </div>
+      <div className="task-card-body"></div>
+    </div>
   );
 };
 
-export default Button;
+export default FederatedApp;

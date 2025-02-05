@@ -1,11 +1,10 @@
 import React from "react";
-import Button from "./components/TaskButton";
+import TaskModule from "./modules/TaskModule";
 
 const App: React.FC = () => {
   return (
     <div>
-      <h1>Task Management</h1>
-      <Button />
+      <TaskModule />
     </div>
   );
 };

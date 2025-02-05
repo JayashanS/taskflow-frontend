@@ -1,0 +1,18 @@
+.task-card-container {
+  width: 98%;
+  height: 100px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+}
+.task-card-head {
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+}
+.task-card-body {
+  flex: 3;
+  background-color: azure;
+}

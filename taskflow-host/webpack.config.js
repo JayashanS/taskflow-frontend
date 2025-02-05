@@ -2,6 +2,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const path = require("path");
 const Dotenv = require("dotenv-webpack");
+const packageJson = require("./package.json");
 
 module.exports = {
   entry: "./src/index.ts",
@@ -48,14 +49,28 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: "host",
+      filename: "remoteEntry.js",
       remotes: {
         admin_dashboard: "admin_dashboard@http://localhost:4001/remoteEntry.js",
         task_management: "task_management@http://localhost:4002/remoteEntry.js",
         user_dashboard: "user_dashboard@http://localhost:4003/remoteEntry.js",
       },
+      exposes: {
+        "./store": "./src/store/store",
+        "./ThemeProvider": "./src/theme/ThemeProvider",
+      },
       shared: {
         react: { singleton: true, eager: true },
         "react-dom": { singleton: true, eager: true },
+        "react-redux": {
+          singleton: true,
+          requiredVersion: packageJson.dependencies["react-redux"],
+        },
+        "@reduxjs/toolkit": {
+          singleton: true,
+          requiredVersion: packageJson.dependencies["@reduxjs/toolkit"],
+        },
+        antd: { singleton: true, eager: true },
       },
     }),
     new HtmlWebpackPlugin({

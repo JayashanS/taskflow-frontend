@@ -9,6 +9,14 @@ declare module "task_management/TaskButton" {
   const Button: React.FC;
   export default Button;
 }
+declare module "task_management/TaskList" {
+  const Button: React.FC;
+  export default Button;
+}
+declare module "task_management/TaskModule" {
+  const Button: React.FC;
+  export default Button;
+}
 
 // user-dashboard
 declare module "user_dashboard/UserButton" {
