@@ -1,3 +1,5 @@
+import { Mode } from "./globalTypes";
+
 export interface User {
   _id: string;
   firstName: string;
@@ -38,5 +40,3 @@ export interface AddressPickerProps {
   handleClose: () => void;
   setAddress: (address: string) => void;
 }
-
-export type Mode = "view" | "create" | "edit";

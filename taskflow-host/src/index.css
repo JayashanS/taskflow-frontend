@@ -1,17 +1,17 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    overflow: hidden;
-  }
-  
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
 .highlight-row {
-  background-color: #f6ebff !important; 
-  transition: background-color 0.3s ease; 
+  background-color: #f6ebff !important;
+  transition: background-color 0.3s ease;
 }
 
 .ant-input {
-  border-radius: 5px; 
+  border-radius: 5px;
 }
 .ant-input-search {
   border-radius: 5px;
@@ -19,7 +19,31 @@
 .ant-input-password {
   border-radius: 5px;
 }
+.ant-table-expanded-row > td {
+  border-bottom: none !important;
+}
+.ant-table-row.expanded-parent-row > td {
+  border-bottom: none !important;
+}
 /* Import Google Maps CSS */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-@import url('https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+@import url("https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places");
 
+.line {
+  animation: fillAnimation 2s infinite ease-in-out;
+}
+
+@keyframes fillAnimation {
+  0% {
+    fill: white;
+    transform: scaleX(1);
+  }
+  50% {
+    fill: #9003fc;
+    transform: scaleX(0.5);
+  }
+  100% {
+    fill: white;
+    transform: scaleX(1);
+  }
+}

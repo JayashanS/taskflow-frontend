@@ -56,3 +56,27 @@ export const updatePassword = async (
     };
   }
 };
+
+export const searchUsersAPI = async (searchTerm: string) => {
+  try {
+    const response = await axios.get(`${API_URL}/users/filter`, {
+      params: { searchTerm },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch users by search"
+    );
+  }
+};
+
+export const toggleUserStatusAPI = async (userId: string) => {
+  try {
+    const response = await axios.post(`${API_URL}/users/toggle/${userId}`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || "Failed to toggle user status"
+    );
+  }
+};

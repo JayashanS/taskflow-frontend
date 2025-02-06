@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store/store";
 import { createUser, editUser } from "../store/slices/userSlice";
+import { setMessage } from "../store/slices/messageSlice";
 import { Form, Input, Button, Select, message } from "antd";
 import { ArrowLeftOutlined, PushpinOutlined } from "@ant-design/icons";
 import { UserFormProps } from "../interfaces/userInterface";
 import AddressPicker from "./AddressPicker";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 const roles = ["admin", "user"];
 
@@ -20,11 +22,13 @@ const UserForm: React.FC<UserFormProps> = ({
   const [password, setPassword] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedAddress, setSelectedAddress] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
 
   useEffect(() => {
     if (mode === "edit" && data) {
       form.setFieldsValue(data);
       setSelectedAddress(data.address);
+      setPhoneNumber(data.mobileNumber);
     } else {
       setPassword(generatePassword());
     }
@@ -42,18 +46,45 @@ const UserForm: React.FC<UserFormProps> = ({
   };
 
   const handleSubmit = async (values: any) => {
-    values.address = selectedAddress;
-    if (mode === "create") {
-      values.password = password;
-      dispatch(createUser(values));
-    } else if (mode === "edit" && data) {
-      values._id = data._id;
-      dispatch(editUser(values));
+    if (!isValidPhoneNumber(phoneNumber)) {
+      dispatch(
+        setMessage({
+          content: "Invalid phone number! Please enter a valid phone number.",
+          type: "error",
+        })
+      );
+      return;
     }
 
-    message.success(
-      `${mode === "create" ? "User created" : "User updated"} successfully!`
-    );
+    try {
+      values.address = selectedAddress;
+
+      if (mode === "create") {
+        values.password = password;
+        await dispatch(createUser(values));
+      } else if (mode === "edit" && data) {
+        values._id = data._id;
+        await dispatch(editUser(values));
+      }
+
+      dispatch(
+        setMessage({
+          content: `${
+            mode === "create" ? "User created" : "User updated"
+          } successfully!`,
+          type: "success",
+        })
+      );
+    } catch (error) {
+      dispatch(
+        setMessage({
+          content:
+            "An error occurred while processing the request. Please try again.",
+          type: "error",
+        })
+      );
+    }
+
     form.resetFields();
     setMode("view");
   };
@@ -66,6 +97,9 @@ const UserForm: React.FC<UserFormProps> = ({
     form.setFieldsValue({ address: selectedAddress });
   }, [selectedAddress]);
 
+  const handlePhoneNumberChange = (value: string) => {
+    setPhoneNumber(value);
+  };
   return (
     <div
       style={{
@@ -138,7 +172,11 @@ const UserForm: React.FC<UserFormProps> = ({
               { required: true, message: "Please input the mobile number!" },
             ]}
           >
-            <Input />
+            <Input
+              value={phoneNumber}
+              onChange={(e) => handlePhoneNumberChange(e.target.value)}
+              placeholder="Enter phone number with country code"
+            />
           </Form.Item>
           <Form.Item
             label="Address"
@@ -155,6 +193,7 @@ const UserForm: React.FC<UserFormProps> = ({
                   style={{ padding: 0 }}
                 />
               }
+              onChange={(e) => setSelectedAddress(e.target.value)}
             />
           </Form.Item>
           <Form.Item
@@ -173,7 +212,7 @@ const UserForm: React.FC<UserFormProps> = ({
 
           {mode === "create" && (
             <Form.Item label="Generated Password">
-              <Input value={password} readOnly />
+              <Input.Password value={password} readOnly />
             </Form.Item>
           )}
 

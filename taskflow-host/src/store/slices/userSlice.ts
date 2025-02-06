@@ -1,9 +1,11 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
   fetchUsersAPI,
+  searchUsersAPI,
   createUserAPI,
   updateUserAPI,
   deleteUserAPI,
+  toggleUserStatusAPI,
 } from "../../services/userService";
 import { User } from "../../interfaces/userInterface";
 
@@ -29,6 +31,14 @@ export const fetchUsers = createAsyncThunk(
   }
 );
 
+export const searchUsers = createAsyncThunk(
+  "users/searchUsers",
+  async (searchTerm: string) => {
+    const users = await searchUsersAPI(searchTerm);
+    return users;
+  }
+);
+
 export const createUser = createAsyncThunk(
   "users/createUser",
   async (newUser: Omit<User, "_id">) => {
@@ -50,6 +60,14 @@ export const deleteUser = createAsyncThunk(
   async (userId: string) => {
     await deleteUserAPI(userId);
     return userId;
+  }
+);
+
+export const toggleUserStatus = createAsyncThunk(
+  "users/toggleUserStatus",
+  async (userId: string) => {
+    const response = await toggleUserStatusAPI(userId);
+    return { userId, isEnabled: response.isEnabled };
   }
 );
 
@@ -78,6 +96,17 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "Failed to fetch users";
       })
+      .addCase(
+        searchUsers.fulfilled,
+        (state, action: PayloadAction<User[]>) => {
+          state.loading = false;
+          state.users = action.payload;
+        }
+      )
+      .addCase(searchUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "No matches";
+      })
       .addCase(createUser.fulfilled, (state, action: PayloadAction<User>) => {
         state.users.unshift(action.payload);
         state.totalRecords += 1;
@@ -90,7 +119,20 @@ const userSlice = createSlice({
       .addCase(deleteUser.fulfilled, (state, action: PayloadAction<string>) => {
         state.users = state.users.filter((user) => user._id !== action.payload);
         state.totalRecords -= 1;
-      });
+      })
+      .addCase(
+        toggleUserStatus.fulfilled,
+        (
+          state,
+          action: PayloadAction<{ userId: string; isEnabled: boolean }>
+        ) => {
+          state.users = state.users.map((user) =>
+            user._id === action.payload.userId
+              ? { ...user, isEnabled: action.payload.isEnabled }
+              : user
+          );
+        }
+      );
   },
 });
 

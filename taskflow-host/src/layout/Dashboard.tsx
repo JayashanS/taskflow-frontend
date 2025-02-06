@@ -10,7 +10,7 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { RootState } from "../store/store";
 import { logout } from "../store/slices/authSlice";
 import "./Dashboard.css";
-import logo from "../assets/logo.png";
+import Logo from "../assets/Logo";
 
 const { Header, Sider, Content } = Layout;
 
@@ -45,7 +45,7 @@ const Dashboard: React.FC = () => {
         className="responsive-padding"
       >
         <div style={{ display: "flex", alignItems: "center" }}>
-          <img
+          {/* <img
             src={logo}
             alt="Logo"
             style={{
@@ -54,7 +54,8 @@ const Dashboard: React.FC = () => {
               marginRight: "10px",
               marginLeft: "5px",
             }}
-          />
+          /> */}
+          <Logo width={40} height={40} />
           <span style={{ marginLeft: "5px" }}>Task Flow</span>
         </div>
         <div>

@@ -1,17 +1,17 @@
 .responsive-padding {
-    padding-left: 0;
-    padding-right: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 @media (min-width: 600px) {
-    .responsive-padding {
-      padding-left: 20px;
-      padding-right: 20px;
-    }
-} 
+  .responsive-padding {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
 @media (min-width: 1000px) {
-    .responsive-padding {
-      padding-left: 100px;
-      padding-right: 100px;
-    }
+  .responsive-padding {
+    padding-left: 70px;
+    padding-right: 70px;
+  }
 }

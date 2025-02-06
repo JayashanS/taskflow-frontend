@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import UserTable from "../components/UserTable";
 import UserForm from "../components/UserForm";
-import { Mode, User } from "../interfaces/userInterface";
+import { Mode } from "../interfaces/globalTypes";
+import { User } from "../interfaces/userInterface";
 
 const UsersPage: React.FC = () => {
   const [mode, setMode] = useState<Mode>("view");

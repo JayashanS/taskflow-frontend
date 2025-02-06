@@ -1,4 +1,5 @@
 # node modules
+node_modules
 taskflow-host/node_modules/
 taskflow-mfe-admin-dashboard/node_modules/
 taskflow-mfe-task-management/node_modules/

@@ -44,6 +44,17 @@ module.exports = {
           filename: "assets/[name].[hash][ext]",
         },
       },
+      {
+        test: /\.svg$/,
+        type: "asset/resource",
+        generator: {
+          filename: "static/media/[name].[hash][ext][query]",
+        },
+      },
+      {
+        test: /\.svg$/,
+        use: ["@svgr/webpack"],
+      },
     ],
   },
   plugins: [
