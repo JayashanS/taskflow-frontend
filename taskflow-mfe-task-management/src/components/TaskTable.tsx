@@ -1,25 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchFilteredTasks } from "../store/slices/taskSlice";
-import { RootState, AppDispatch } from "../store/store";
-import { Input, DatePicker, Select, Table, Switch, Button } from "antd";
+import {
+  fetchFilteredTasks,
+  deleteTask,
+  toggleTaskStatus,
+} from "host/taskSlice";
+import { setMessage } from "host/messageSlice";
+import { RootState, AppDispatch } from "host/store";
+import { Input, DatePicker, Table, Switch, Button, Popconfirm } from "antd";
 import { ColumnType } from "antd/es/table";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import moment, { Moment } from "moment";
-import { Task, TaskTableProps } from "../interfaces/taskInterface";
+import { Task, TaskTableProps } from "host/taskInterface";
 
 const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { tasks, loading, error, totalRecords } = useSelector(
     (state: RootState) => state.tasks
   );
+  const { users } = useSelector((state: RootState) => state.users);
 
   const [filters, setFilters] = useState({
     taskName: "",
     startDate: undefined as string | undefined,
     endDate: undefined as string | undefined,
     userId: "",
+    status: "inProgress",
   });
+  const [loadingTaskId, setLoadingTaskId] = useState<string | null>(null);
+  const [userSearch, setUserSearch] = useState<string>("");
 
   useEffect(() => {
     dispatch(fetchFilteredTasks(filters));
@@ -46,6 +55,51 @@ const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
     setMode("edit");
     setData(user);
   };
+  const handleDelete = (taskId: string) => {
+    dispatch(deleteTask(taskId))
+      .then(() => {
+        dispatch(
+          setMessage({
+            content: "Task deleted successfully!",
+            type: "success",
+          })
+        );
+      })
+      .catch(() => {
+        dispatch(
+          setMessage({
+            content: "Task deleted successfully!",
+            type: "error",
+          })
+        );
+      });
+  };
+
+  const handleToggleStatus = async (taskId: string) => {
+    setLoadingTaskId(taskId);
+    const updatedTasks = tasks.map((task: any) =>
+      task._id === taskId ? { ...task, isEnabled: !task.isEnabled } : task
+    );
+    dispatch({ type: "tasks/setTasks", payload: updatedTasks });
+    try {
+      await dispatch(toggleTaskStatus(taskId)).unwrap();
+      dispatch(
+        setMessage({
+          content: "Task status updated successfully!",
+          type: "success",
+        })
+      );
+    } catch (error) {
+      dispatch(
+        setMessage({
+          content: "Failed to update task status.",
+          type: "error",
+        })
+      );
+    } finally {
+      setLoadingTaskId(null);
+    }
+  };
 
   const columns: ColumnType<Task>[] = [
     {
@@ -55,8 +109,8 @@ const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
     },
     {
       title: "Assigned User",
-      dataIndex: "assignedUser",
-      key: "assignedUser",
+      dataIndex: "assignedUserName",
+      key: "assignedUserName",
     },
     {
       title: "Start Date",
@@ -78,7 +132,13 @@ const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
       key: "isEnabled",
       width: 150,
       align: "center",
-      render: (text: boolean, record: any) => <Switch checked={text} />,
+      render: (isEnabled: boolean, record: any) => (
+        <Switch
+          checked={isEnabled}
+          onChange={() => handleToggleStatus(record._id)}
+          loading={loadingTaskId === record._id}
+        />
+      ),
     },
     {
       title: "Actions",
@@ -91,10 +151,18 @@ const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
             style={{ marginRight: "10px" }}
             onClick={() => handleEdit(record)}
           />
-          <Button
-            icon={<DeleteOutlined />}
-            onClick={() => handleEdit(record)}
-          />
+          <Popconfirm
+            title="Are you sure you want to delete this user?"
+            onConfirm={() => handleDelete(record._id)}
+            okText="Yes"
+            cancelText="No"
+            overlayStyle={{
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.15)",
+            }}
+          >
+            {" "}
+            <Button icon={<DeleteOutlined />} />
+          </Popconfirm>
         </div>
       ),
     },
@@ -109,11 +177,13 @@ const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
         >
           Create Task
         </Button>
-        <Input
-          placeholder="Filter by Task Name"
+        <Input.Search
+          placeholder="Serch by Task Name"
           value={filters.taskName}
           onChange={(e) => handleFilterChange("taskName", e.target.value)}
-          style={{ width: 200, marginRight: "10px" }}
+          style={{ width: 300, marginRight: "10px" }}
+          enterButton
+          allowClear
         />
         <DatePicker
           placeholder="Start Date"
@@ -127,16 +197,15 @@ const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
           onChange={(date) => handleDateChange("endDate", date)}
           style={{ marginRight: "10px" }}
         />
-        <Select
-          placeholder="Assign User"
-          value={filters.userId}
-          onChange={(value) => handleFilterChange("userId", value)}
-          style={{ width: 200 }}
-        >
-          <Select.Option value="1">User 1</Select.Option>
-          <Select.Option value="2">User 2</Select.Option>
-          <Select.Option value="3">User 3</Select.Option>
-        </Select>
+        <Switch
+          checked={filters.status === "completed"}
+          onChange={(checked) =>
+            handleFilterChange("status", checked ? "completed" : "inProgress")
+          }
+          checkedChildren="Completed"
+          unCheckedChildren="In Progress"
+          style={{ marginLeft: "10px" }}
+        />
       </div>
       <Table
         columns={columns}

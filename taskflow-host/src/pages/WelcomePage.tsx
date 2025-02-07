@@ -29,8 +29,8 @@ const WelcomePage: React.FC = () => {
   const [passwordValid, setPasswordValid] = useState<boolean>(false);
   const [passwordError, setPasswordError] = useState<string>("");
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
-  const [isSuccess, setIsSuccess] = useState<boolean | null>(null); // Initialize as null
-  const [isLoading, setIsLoading] = useState<boolean>(false); // For showing loading spinner
+  const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const emailParam = searchParams.get("email");
@@ -41,7 +41,6 @@ const WelcomePage: React.FC = () => {
     }
   }, [searchParams]);
 
-  // Password validation function
   const validatePassword = (pwd: string) => {
     if (pwd.length < 8) {
       setPasswordError("Password must be at least 8 characters long.");
@@ -91,11 +90,11 @@ const WelcomePage: React.FC = () => {
       return;
     }
 
-    setIsLoading(true); // Set loading state
+    setIsLoading(true);
 
     const result = await updatePassword(email, password, otp);
 
-    setIsLoading(false); // Reset loading state
+    setIsLoading(false);
 
     if (result.success) {
       message.success(result.message);
@@ -106,7 +105,6 @@ const WelcomePage: React.FC = () => {
     }
   };
 
-  // If the result is not available yet, show a loading spinner
   if (isLoading) {
     return (
       <div
@@ -166,7 +164,6 @@ const WelcomePage: React.FC = () => {
         Please update your password to continue...
       </Text>
 
-      {/* Password Field */}
       <Input.Password
         size="large"
         placeholder="Enter your password"
@@ -190,7 +187,6 @@ const WelcomePage: React.FC = () => {
         </Text>
       )}
 
-      {/* Confirm Password Field */}
       <Input.Password
         size="large"
         placeholder="Confirm your password"
@@ -218,7 +214,6 @@ const WelcomePage: React.FC = () => {
         </Text>
       )}
 
-      {/* Update Password Button */}
       <Button
         size="large"
         type="primary"

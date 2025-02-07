@@ -5,9 +5,11 @@ import {
   deleteUser,
   searchUsers,
   toggleUserStatus,
+  inviteUser,
 } from "../store/slices/userSlice";
+import { setMessage } from "../store/slices/messageSlice";
 import { RootState, AppDispatch } from "../store/store";
-import { Table, Space, Button, Input, message, Switch, Popconfirm } from "antd";
+import { Table, Space, Button, Input, Switch, Popconfirm } from "antd";
 import { EditOutlined, DeleteOutlined, MailOutlined } from "@ant-design/icons";
 import { User, UserTableProps } from "../interfaces/userInterface";
 
@@ -23,16 +25,28 @@ const UserTable: React.FC<UserTableProps> = ({ setMode, setData }) => {
   });
   const [search, setSearch] = useState("");
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
-  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
-    if (search.trim()) {
-      dispatch(searchUsers(search));
-    } else {
-      dispatch(
-        fetchUsers({ page: pagination.current, limit: pagination.pageSize })
-      );
-    }
+    const handleFetchData = async () => {
+      try {
+        if (search.trim()) {
+          await dispatch(searchUsers(search)).unwrap();
+        } else {
+          await dispatch(
+            fetchUsers({ page: pagination.current, limit: pagination.pageSize })
+          ).unwrap();
+        }
+      } catch (error: any) {
+        dispatch(
+          setMessage({
+            content: error.message || "An error occurred",
+            type: "error",
+          })
+        );
+      }
+    };
+
+    handleFetchData();
   }, [dispatch, pagination.current, pagination.pageSize, search]);
 
   const handleTableChange = (pagination: any) => {
@@ -56,14 +70,23 @@ const UserTable: React.FC<UserTableProps> = ({ setMode, setData }) => {
     setData(user);
   };
 
-  const handleDelete = (userId: string) => {
-    dispatch(deleteUser(userId))
-      .then(() => {
-        messageApi.success("User deleted successfully!");
-      })
-      .catch(() => {
-        messageApi.error("Failed to delete user.");
-      });
+  const handleDelete = async (userId: string) => {
+    try {
+      await dispatch(deleteUser(userId)).unwrap();
+      dispatch(
+        setMessage({
+          content: "User deleted successfully!",
+          type: "success",
+        })
+      );
+    } catch (error: any) {
+      dispatch(
+        setMessage({
+          content: "Failed to delete user.",
+          type: "error",
+        })
+      );
+    }
   };
 
   const handleToggleStatus = async (userId: string) => {
@@ -74,19 +97,50 @@ const UserTable: React.FC<UserTableProps> = ({ setMode, setData }) => {
     dispatch({ type: "users/setUsers", payload: updatedUsers });
     try {
       await dispatch(toggleUserStatus(userId)).unwrap();
-      messageApi.success("User status updated successfully!");
+      dispatch(
+        setMessage({
+          content: "User status updated successfully!",
+          type: "success",
+        })
+      );
     } catch (error) {
-      messageApi.error("Failed to update user status.");
+      dispatch(
+        setMessage({
+          content: "Failed to update user status.",
+          type: "error",
+        })
+      );
     } finally {
       setLoadingUserId(null);
     }
   };
 
-  const handleSendOtpEmail = (userId: string) => {
-    // Logic to send OTP email goes here
-    console.log(`Sending OTP email to user with ID: ${userId}`);
-    // You can dispatch an action or call an API here
-    messageApi.success("Email sent");
+  const handleSendOtpEmail = async (email: string) => {
+    try {
+      if (email.trim()) {
+        const message = await dispatch(inviteUser(email)).unwrap();
+        dispatch(
+          setMessage({
+            content: "Email sent successfully!",
+            type: "success",
+          })
+        );
+      } else {
+        dispatch(
+          setMessage({
+            content: "Please provide a valid email.",
+            type: "error",
+          })
+        );
+      }
+    } catch (error: any) {
+      dispatch(
+        setMessage({
+          content: "An error occurred while inviting the user.",
+          type: "error",
+        })
+      );
+    }
   };
 
   const columns = [
@@ -157,7 +211,7 @@ const UserTable: React.FC<UserTableProps> = ({ setMode, setData }) => {
 
           <Popconfirm
             title="Are you sure you want to send OTP email?"
-            onConfirm={() => handleSendOtpEmail(record._id)}
+            onConfirm={() => handleSendOtpEmail(record.email)}
             okText="Yes"
             cancelText="No"
             overlayStyle={{
@@ -173,7 +227,6 @@ const UserTable: React.FC<UserTableProps> = ({ setMode, setData }) => {
 
   return (
     <div>
-      {contextHolder}
       <div
         style={{
           marginBottom: "16px",
@@ -190,7 +243,7 @@ const UserTable: React.FC<UserTableProps> = ({ setMode, setData }) => {
 
         <Input.Search
           style={{ width: 300 }}
-          placeholder="Search users"
+          placeholder="Search users by name or email"
           enterButton
           onSearch={handleSearch}
           onChange={handleSearchChange}

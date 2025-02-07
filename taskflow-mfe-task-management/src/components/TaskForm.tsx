@@ -1,24 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store/store";
-import { createTask, editTask } from "../store/slices/taskSlice"; // Assuming you have these actions
-import { Form, Input, Button, DatePicker, Switch, message } from "antd";
+import { AppDispatch } from "host/store";
+import { createTask, editTask } from "host/taskSlice";
+import { setMessage } from "host/messageSlice";
+import { Form, Input, Button, DatePicker, Switch, Select } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { TaskFormProps } from "../interfaces/taskInterface"; // Assuming the TaskFormProps interface is in a file named taskInterface.ts
+import { TaskFormProps } from "host/taskInterface";
+import { fetchAllUsers, User } from "../services/userService";
 import dayjs from "dayjs";
+import weekday from "dayjs/plugin/weekday";
+import localeData from "dayjs/plugin/localeData";
+dayjs.extend(weekday);
+dayjs.extend(localeData);
 
 const TaskForm: React.FC<TaskFormProps> = ({ mode, data, setMode }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [form] = Form.useForm();
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
+  const [users, setUsers] = useState<User[]>([]);
 
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        const usersData = await fetchAllUsers();
+        setUsers(usersData);
+      } catch (err) {
+      } finally {
+      }
+    };
+    loadUsers();
+  }, []);
   useEffect(() => {
     if (mode === "edit" && data) {
       form.setFieldsValue({
         taskName: data.taskName,
         description: data.description,
-        startDate: dayjs(data.startDate), // Convert to dayjs object
-        endDate: dayjs(data.endDate), // Convert to dayjs object
+        startDate: dayjs(data.startDate),
+        endDate: dayjs(data.endDate),
         assignedUser: data.assignedUser,
         isEnabled: data.isEnabled,
       });
@@ -34,9 +52,13 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, data, setMode }) => {
       values._id = data._id;
       dispatch(editTask(values));
     }
-
-    message.success(
-      `${mode === "create" ? "Task created" : "Task updated"} successfully!`
+    dispatch(
+      setMessage({
+        content: `${
+          mode === "create" ? "Task created" : "Task updated"
+        } successfully!`,
+        type: "success",
+      })
     );
     form.resetFields();
     setMode("view");
@@ -108,10 +130,23 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, data, setMode }) => {
             label="Assigned User"
             name="assignedUser"
             rules={[
-              { required: true, message: "Please input the assigned user!" },
+              { required: true, message: "Please select the assigned user!" },
             ]}
           >
-            <Input />
+            <Select
+              placeholder="Select a user"
+              showSearch
+              optionFilterProp="label"
+              filterOption={(input, option) =>
+                option
+                  ? option.label.toLowerCase().includes(input.toLowerCase())
+                  : false
+              }
+              options={users.map((user) => ({
+                value: user._id,
+                label: `${user.firstName} ${user.lastName}`,
+              }))}
+            ></Select>
           </Form.Item>
           <Form.Item
             label="Is Enabled"

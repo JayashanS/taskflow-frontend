@@ -1,3 +1,4 @@
+import React, { Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,12 +7,13 @@ import {
 } from "react-router-dom";
 import Dashboard from "../layout/Dashboard";
 import UsersPage from "../pages/UsersPage";
-import TasksPage from "../pages/TasksPage";
 import LoginPage from "../pages/LoginPage";
 import WelcomePage from "../pages/WelcomePage";
 import Unauthorized from "../pages/Unauthorized";
 import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
+import FallBackUI from "../components/FallbackUI";
+const TaskModule = React.lazy(() => import("task_management/TaskModule"));
 
 const RoutesConfig = () => {
   return (
@@ -29,7 +31,14 @@ const RoutesConfig = () => {
           <Route element={<Dashboard />}>
             <Route element={<AdminRoute />}>
               <Route path="/users" element={<UsersPage />} />
-              <Route path="/tasks" element={<TasksPage />} />
+              <Route
+                path="/tasks"
+                element={
+                  <Suspense fallback={<FallBackUI />}>
+                    <TaskModule />
+                  </Suspense>
+                }
+              />
             </Route>
           </Route>
         </Route>

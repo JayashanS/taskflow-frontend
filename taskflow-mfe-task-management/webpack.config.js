@@ -37,9 +37,9 @@ module.exports = {
       name: "task_management",
       filename: "remoteEntry.js",
       exposes: {
-        "./TaskButton": "./src/components/TaskButton",
-        "./TaskList": "./src/components/TaskList",
         "./TaskModule": "./src/modules/TaskModule",
+        "./TaskTable2": "./src/components/TaskTable",
+        "./TaskForm2": "./src/components/TaskForm",
       },
       remotes: {
         host: "host@http://localhost:4000/remoteEntry.js",

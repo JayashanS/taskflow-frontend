@@ -1,28 +1,38 @@
-import React from "react";
-import { SyncOutlined, CheckCircleOutlined } from "@ant-design/icons";
-import { Tabs } from "antd";
-import InProgressTab from "../components/InProgressTab";
+import React, { useState } from "react";
+import TaskTable from "../components/TaskTable";
+import TaskForm from "../components/TaskForm";
+import { Mode } from "../interfaces/globaleTypes";
+import { Task } from "host/taskInterface";
 
-const CompletedTab: React.FC = () => <div>Tasks that are completed.</div>;
+const TaskPage: React.FC = () => {
+  const [mode, setMode] = useState<Mode>("view");
+  const [data, setData] = useState<Task>();
 
-const TaskModule: React.FC = () => (
-  <Tabs
-    defaultActiveKey="1"
-    items={[
-      {
-        key: "1",
-        label: "In Progress",
-        icon: <SyncOutlined />,
-        children: <InProgressTab />,
-      },
-      {
-        key: "2",
-        label: "Completed",
-        icon: <CheckCircleOutlined />,
-        children: <CompletedTab />,
-      },
-    ]}
-  />
-);
+  const handleSubmit = (data: Task) => {
+    console.log(data);
+  };
 
-export default TaskModule;
+  return (
+    <div>
+      {mode === "view" && <TaskTable setMode={setMode} setData={setData} />}
+      {mode === "edit" && (
+        <TaskForm
+          mode={mode}
+          data={data}
+          onSubmit={handleSubmit}
+          setMode={setMode}
+        />
+      )}
+      {mode === "create" && (
+        <TaskForm
+          mode={mode}
+          data={data}
+          onSubmit={handleSubmit}
+          setMode={setMode}
+        />
+      )}
+    </div>
+  );
+};
+
+export default TaskPage;

@@ -7,6 +7,7 @@ export interface Task {
   startDate: string;
   endDate: string;
   assignedUser: string;
+  assignedUserName: string;
   isEnabled: boolean;
   completionDate?: string;
 }

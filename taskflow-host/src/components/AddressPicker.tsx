@@ -10,7 +10,7 @@ import { Point } from "ol/geom";
 import { Feature } from "ol";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
-import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
+import { Circle as CircleStyle, Fill, Style } from "ol/style";
 import { AddressPickerProps } from "../interfaces/userInterface";
 
 const GoogleMap: React.FC<AddressPickerProps> = ({

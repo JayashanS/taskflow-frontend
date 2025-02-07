@@ -29,6 +29,22 @@ export const deleteUserAPI = async (userId: string) => {
   return response.data;
 };
 
+export const inviteUserAPI = async (email: string) => {
+  const response = await axios.post(`${API_URL}/users/invite`, { email });
+  return response.data;
+};
+
+export const searchUsersAPI = async (searchTerm: string) => {
+  const response = await axios.get(`${API_URL}/users/filter`, {
+    params: { searchTerm },
+  });
+  return response.data;
+};
+
+export const toggleUserStatusAPI = async (userId: string) => {
+  const response = await axios.post(`${API_URL}/users/toggle/${userId}`);
+  return response.data;
+};
 export const updatePassword = async (
   email: string,
   password: string,
@@ -57,26 +73,9 @@ export const updatePassword = async (
   }
 };
 
-export const searchUsersAPI = async (searchTerm: string) => {
-  try {
-    const response = await axios.get(`${API_URL}/users/filter`, {
-      params: { searchTerm },
-    });
-    return response.data;
-  } catch (error: any) {
-    throw new Error(
-      error.response?.data?.message || "Failed to fetch users by search"
-    );
-  }
-};
-
-export const toggleUserStatusAPI = async (userId: string) => {
-  try {
-    const response = await axios.post(`${API_URL}/users/toggle/${userId}`);
-    return response.data;
-  } catch (error: any) {
-    throw new Error(
-      error.response?.data?.message || "Failed to toggle user status"
-    );
-  }
+export const searchUserIdsAPI = async (searchTerm: string) => {
+  const response = await axios.get(`${API_URL}/users/search`, {
+    params: { searchTerm },
+  });
+  return response.data;
 };

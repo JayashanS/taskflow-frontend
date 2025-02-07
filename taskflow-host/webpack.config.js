@@ -68,6 +68,13 @@ module.exports = {
       },
       exposes: {
         "./store": "./src/store/store",
+        "./useAuth": "./src/hooks/useAuth",
+        "./taskSlice": "./src/store/slices/taskSlice",
+        "./userSlice": "./src/store/slices/userSlice",
+        "./messageSlice": "./src/store/slices/messageSlice",
+        "./taskInterface": "./src/interfaces/taskInterface",
+        "./userInterface": "./src/interfaces/userInterface",
+        "./globalTypes": "./src/interfaces/globalTypes",
         "./ThemeProvider": "./src/theme/ThemeProvider",
       },
       shared: {

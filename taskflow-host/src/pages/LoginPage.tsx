@@ -7,8 +7,9 @@ import {
   LockOutlined,
   InfoCircleOutlined,
 } from "@ant-design/icons";
-import { Input, Button, Tooltip, notification } from "antd";
+import { Input, Button, Tooltip, notification, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
+import AnimatedLogo from "../assets/AnimatedLogo";
 
 const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -16,6 +17,7 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { Text } = Typography;
 
   const handleLogin = async () => {
     setLoading(true);
@@ -45,6 +47,25 @@ const LoginPage: React.FC = () => {
         padding: "20px",
       }}
     >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <AnimatedLogo />
+        <Text
+          style={{
+            fontSize: "24px",
+            fontWeight: "bold",
+            marginLeft: "10px",
+          }}
+        >
+          Task Flow
+        </Text>
+      </div>
+
       <Input
         size="large"
         placeholder="Enter your email"
@@ -54,7 +75,7 @@ const LoginPage: React.FC = () => {
             <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
           </Tooltip>
         }
-        style={{ width: "100%", maxWidth: "300px" }}
+        style={{ width: "100%", maxWidth: "300px", marginTop: "20px" }}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
@@ -82,7 +103,6 @@ const LoginPage: React.FC = () => {
       >
         Log in
       </Button>
-      <button onClick={() => navigate("/welcome")}>Go to About</button>
     </div>
   );
 };

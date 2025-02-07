@@ -15,6 +15,13 @@ export interface User {
   __v: number;
 }
 
+export interface UserState {
+  users: User[];
+  totalRecords: number;
+  loading: boolean;
+  error: string | null;
+}
+
 export interface UserTableProps {
   setMode: (mode: Mode) => void;
   setData: (data: User) => void;

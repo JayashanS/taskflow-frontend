@@ -15,14 +15,16 @@ export const fetchFilteredTasksAPI = async ({
   startDate,
   endDate,
   userId,
+  status,
 }: {
   taskName?: string;
   startDate?: string;
   endDate?: string;
   userId?: string;
+  status?: string;
 }) => {
   const response = await axios.get(`${API_URL}/tasks/filter`, {
-    params: { taskName, startDate, endDate, userId },
+    params: { taskName, startDate, endDate, userId, status },
   });
   return response.data;
 };
@@ -42,6 +44,11 @@ export const updateTaskAPI = async (updatedTask: Task) => {
 
 export const deleteTaskAPI = async (taskId: string) => {
   const response = await axios.delete(`${API_URL}/tasks/${taskId}`);
+  return response.data;
+};
+
+export const toggleTaskStatusAPI = async (taskId: string) => {
+  const response = await axios.post(`${API_URL}/tasks/toggle/${taskId}`);
   return response.data;
 };
 
