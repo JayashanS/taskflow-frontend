@@ -12,7 +12,9 @@ import WelcomePage from "../pages/WelcomePage";
 import Unauthorized from "../pages/Unauthorized";
 import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
+import UserRoute from "./UserRoute";
 import FallBackUI from "../components/FallbackUI";
+
 const TaskModule = React.lazy(() => import("task_management/TaskModule"));
 
 const RoutesConfig = () => {
@@ -22,25 +24,31 @@ const RoutesConfig = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/welcome/*" element={<WelcomePage />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-
-        {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
-          <Route path="/" element={<Navigate to="/users" replace />} />
-
-          {/* Dashboard Layout */}
+          <Route path="/" element={<Navigate to="/tasks" replace />} />
           <Route element={<Dashboard />}>
             <Route element={<AdminRoute />}>
               <Route path="/users" element={<UsersPage />} />
-              <Route
-                path="/tasks"
-                element={
-                  <Suspense fallback={<FallBackUI />}>
-                    <TaskModule />
-                  </Suspense>
-                }
-              />
             </Route>
+            <Route
+              path="/tasks"
+              element={
+                <Suspense fallback={<FallBackUI />}>
+                  <TaskModule />
+                </Suspense>
+              }
+            />
           </Route>
+        </Route>
+        <Route element={<UserRoute />}>
+          <Route
+            path="/tasks"
+            element={
+              <Suspense fallback={<FallBackUI />}>
+                <TaskModule />
+              </Suspense>
+            }
+          />
         </Route>
       </Routes>
     </Router>

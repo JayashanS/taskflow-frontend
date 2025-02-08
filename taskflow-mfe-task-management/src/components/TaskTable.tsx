@@ -13,12 +13,11 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import moment, { Moment } from "moment";
 import { Task, TaskTableProps } from "host/taskInterface";
 
-const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
+const TaskTable: React.FC<TaskTableProps> = ({ setMode, setData }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { tasks, loading, error, totalRecords } = useSelector(
     (state: RootState) => state.tasks
   );
-  const { users } = useSelector((state: RootState) => state.users);
 
   const [filters, setFilters] = useState({
     taskName: "",
@@ -28,7 +27,6 @@ const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
     status: "inProgress",
   });
   const [loadingTaskId, setLoadingTaskId] = useState<string | null>(null);
-  const [userSearch, setUserSearch] = useState<string>("");
 
   useEffect(() => {
     dispatch(fetchFilteredTasks(filters));
@@ -68,7 +66,7 @@ const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
       .catch(() => {
         dispatch(
           setMessage({
-            content: "Task deleted successfully!",
+            content: "Failed to delete task",
             type: "error",
           })
         );
@@ -126,12 +124,13 @@ const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
       width: 120,
       render: (text: string) => moment(text).format("YYYY-MM-DD"),
     },
+
     {
       title: "Enable/Disable",
       dataIndex: "isEnabled",
       key: "isEnabled",
       width: 150,
-      align: "center",
+      align: "center" as "center",
       render: (isEnabled: boolean, record: any) => (
         <Switch
           checked={isEnabled}
@@ -145,14 +144,13 @@ const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
       key: "actions",
       render: (text: any, record: any) => (
         <div>
-          {" "}
           <Button
             icon={<EditOutlined />}
             style={{ marginRight: "10px" }}
             onClick={() => handleEdit(record)}
           />
           <Popconfirm
-            title="Are you sure you want to delete this user?"
+            title="Are you sure you want to delete this task?"
             onConfirm={() => handleDelete(record._id)}
             okText="Yes"
             cancelText="No"
@@ -160,7 +158,6 @@ const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.15)",
             }}
           >
-            {" "}
             <Button icon={<DeleteOutlined />} />
           </Popconfirm>
         </div>
@@ -177,6 +174,7 @@ const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
         >
           Create Task
         </Button>
+
         <Input.Search
           placeholder="Serch by Task Name"
           value={filters.taskName}
@@ -232,4 +230,4 @@ const TasksPage: React.FC<TaskTableProps> = ({ setMode, setData }) => {
   );
 };
 
-export default TasksPage;
+export default TaskTable;

@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
   fetchTasksAPI,
   fetchFilteredTasksAPI,
+  fetchFilteredTasksByUserEmailAPI,
   createTaskAPI,
   updateTaskAPI,
   deleteTaskAPI,
@@ -56,6 +57,42 @@ export const fetchFilteredTasks = createAsyncThunk(
         startDate,
         endDate,
         userId,
+        status,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue("Failed to fetch filtered tasks");
+    }
+  }
+);
+
+export const fetchFilteredTasksByUserEmail = createAsyncThunk(
+  "tasks/fetchFilteredTasksByUserEmail",
+  async (
+    {
+      email,
+      taskName,
+      startDate,
+      endDate,
+
+      status,
+    }: {
+      email: string;
+      taskName?: string;
+      startDate?: string;
+      endDate?: string;
+
+      status?: string;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await fetchFilteredTasksByUserEmailAPI({
+        email,
+        taskName,
+        startDate,
+        endDate,
+
         status,
       });
       return response;
@@ -166,6 +203,20 @@ const taskSlice = createSlice({
           action.error.message ||
           action.error.message ||
           "Failed to fetch filtered tasks";
+      })
+      .addCase(
+        fetchFilteredTasksByUserEmail.fulfilled,
+        (state, action: PayloadAction<Task[]>) => {
+          state.loading = false;
+          state.tasks = action.payload;
+        }
+      )
+      .addCase(fetchFilteredTasksByUserEmail.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.error.message ||
+          action.error.message ||
+          "Failed to fetch filtered tasks for user";
       })
       .addCase(createTask.fulfilled, (state, action: PayloadAction<Task>) => {
         state.tasks.unshift(action.payload);

@@ -62,9 +62,7 @@ module.exports = {
       name: "host",
       filename: "remoteEntry.js",
       remotes: {
-        admin_dashboard: "admin_dashboard@http://localhost:4001/remoteEntry.js",
         task_management: "task_management@http://localhost:4002/remoteEntry.js",
-        user_dashboard: "user_dashboard@http://localhost:4003/remoteEntry.js",
       },
       exposes: {
         "./store": "./src/store/store",

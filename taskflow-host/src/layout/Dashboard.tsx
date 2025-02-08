@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Layout, Menu, Avatar, Dropdown } from "antd";
 import {
   UserOutlined,
@@ -7,8 +7,8 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { RootState } from "../store/store";
 import { logout } from "../store/slices/authSlice";
+import useAuth from "../hooks/useAuth";
 import "./Dashboard.css";
 import Logo from "../assets/Logo";
 
@@ -16,7 +16,7 @@ const { Header, Sider, Content } = Layout;
 
 const Dashboard: React.FC = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const { user } = useAuth();
 
   const handleLogout = () => {
     dispatch(logout());
@@ -88,9 +88,11 @@ const Dashboard: React.FC = () => {
             selectedKeys={[location.pathname]}
             style={{ height: "100%" }}
           >
-            <Menu.Item key="/users" icon={<UserOutlined />}>
-              <Link to="/users">Users</Link>
-            </Menu.Item>
+            {user?.role == "admin" && (
+              <Menu.Item key="/users" icon={<UserOutlined />}>
+                <Link to="/users">Users</Link>
+              </Menu.Item>
+            )}
             <Menu.Item key="/tasks" icon={<FileTextOutlined />}>
               <Link to="/tasks">Tasks</Link>
             </Menu.Item>

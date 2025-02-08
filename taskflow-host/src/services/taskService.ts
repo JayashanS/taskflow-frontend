@@ -23,8 +23,29 @@ export const fetchFilteredTasksAPI = async ({
   userId?: string;
   status?: string;
 }) => {
+  console.log("fetchFilteredTasksAPI called");
   const response = await axios.get(`${API_URL}/tasks/filter`, {
     params: { taskName, startDate, endDate, userId, status },
+  });
+  return response.data;
+};
+
+export const fetchFilteredTasksByUserEmailAPI = async ({
+  email,
+  taskName,
+  startDate,
+  endDate,
+  status,
+}: {
+  email: string;
+  taskName?: string;
+  startDate?: string;
+  endDate?: string;
+  status?: string;
+}) => {
+  console.log("fetchFilteredTasksAPI called");
+  const response = await axios.get(`${API_URL}/tasks/filter/user/${email}`, {
+    params: { taskName, startDate, endDate, status },
   });
   return response.data;
 };
@@ -56,7 +77,7 @@ export const updateCompletionDateAPI = async (
   taskId: string,
   completionDate: Date
 ) => {
-  const response = await axios.patch(`${API_URL}/tasks/complete${taskId}`, {
+  const response = await axios.patch(`${API_URL}/tasks/complete/${taskId}`, {
     completionDate,
   });
   return response.data;

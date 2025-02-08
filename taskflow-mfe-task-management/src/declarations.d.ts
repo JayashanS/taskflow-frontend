@@ -68,15 +68,12 @@ declare module "host/taskSlice" {
   >;
 
   export const fetchFilteredTasks: any;
-
+  export const fetchFilteredTasksByUserEmail: any;
   export const createTask: any;
   export const editTask: any;
   export const deleteTask: (taskId: string) => Action<any>;
   export const toggleTaskStatus: any;
-  export const updateCompletionDate: (params: {
-    taskId: string;
-    completionDate: Date;
-  }) => ThunkAction<Promise<Task>, any, unknown, PayloadAction>;
+  export const updateCompletionDate: any;
 
   export default function taskReducer(state: TaskState, action: any): TaskState;
 }
@@ -124,4 +121,8 @@ declare module "host/userSlice" {
   import { User } from "host/userInterface";
 
   export const searchUsers: any;
+}
+declare module "host/useAuth" {
+  const useAuth: () => { user: any; isAuthenticated: boolean };
+  export default useAuth;
 }
