@@ -30,7 +30,7 @@ const TaskTable: React.FC<TaskTableProps> = ({ setMode, setData }) => {
 
   useEffect(() => {
     dispatch(fetchFilteredTasks(filters));
-  }, [filters, dispatch]);
+  }, [filters, dispatch, setMode]);
 
   const handleFilterChange = (key: string, value: any) => {
     setFilters((prev) => ({

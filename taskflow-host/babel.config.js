@@ -1,7 +1,7 @@
 module.exports = {
   presets: [
-    "@babel/preset-env", // Transpile ES6+ code
-    "@babel/preset-react", // Transpile JSX
-    "@babel/preset-typescript", // Support TypeScript
+    "@babel/preset-env",
+    "@babel/preset-react",
+    "@babel/preset-typescript",
   ],
 };

@@ -9,7 +9,6 @@ import {
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { logout } from "../store/slices/authSlice";
 import useAuth from "../hooks/useAuth";
-import "./Dashboard.css";
 import Logo from "../assets/Logo";
 
 const { Header, Sider, Content } = Layout;

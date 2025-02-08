@@ -46,6 +46,28 @@ export const toggleUserStatusAPI = async (userId: string) => {
   const response = await axiosInstance.post(`/users/toggle/${userId}`);
   return response.data;
 };
+
+export const searchUserAPI = async (searchTerm: string) => {
+  const response = await axiosInstance.get(`/users/search`, {
+    params: { searchTerm },
+  });
+  return response.data;
+};
+
+export const getUsersListAPI = async () => {
+  const response = await axiosInstance.get(`/users/id`);
+  return response.data;
+};
+
+export const checkEmailAvailabilityAPI = async (email: string) => {
+  try {
+    const response = await axiosInstance.post("/users/check-email", { email });
+    return { isValid: true, message: "Email is available" };
+  } catch (error) {
+    return { isValid: false, message: "Email is already taken" };
+  }
+};
+
 export const updatePassword = async (
   email: string,
   password: string,
@@ -72,11 +94,4 @@ export const updatePassword = async (
       message: error.response?.data?.message || "Request failed.",
     };
   }
-};
-
-export const searchUserIdsAPI = async (searchTerm: string) => {
-  const response = await axiosInstance.get(`/users/search`, {
-    params: { searchTerm },
-  });
-  return response.data;
 };

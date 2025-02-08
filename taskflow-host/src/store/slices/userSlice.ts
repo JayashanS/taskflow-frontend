@@ -7,7 +7,6 @@ import {
   deleteUserAPI,
   inviteUserAPI,
   toggleUserStatusAPI,
-  searchUserIdsAPI,
 } from "../../services/userService";
 import { User, UserState } from "../../interfaces/userInterface";
 

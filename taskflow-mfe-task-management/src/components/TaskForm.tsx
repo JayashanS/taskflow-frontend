@@ -1,35 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "host/store";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "host/store";
 import { createTask, editTask } from "host/taskSlice";
+import { searchUsers, resetSearchState } from "host/userSearchSlice";
 import { setMessage } from "host/messageSlice";
-import { Form, Input, Button, DatePicker, Switch, Select } from "antd";
+import { Form, Input, Button, DatePicker, Switch, Select, Spin } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { TaskFormProps } from "host/taskInterface";
-import { fetchAllUsers, User } from "../services/userService";
+import { User } from "../interfaces/userInterface";
 import dayjs from "dayjs";
 import weekday from "dayjs/plugin/weekday";
 import localeData from "dayjs/plugin/localeData";
 dayjs.extend(weekday);
 dayjs.extend(localeData);
+const { Option } = Select;
 
 const TaskForm: React.FC<TaskFormProps> = ({ mode, data, setMode }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { users, loading, error } = useSelector(
+    (state: RootState) => state.userSearch
+  );
   const [form] = Form.useForm();
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
-  const [users, setUsers] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
-    const loadUsers = async () => {
-      try {
-        const usersData = await fetchAllUsers();
-        setUsers(usersData);
-      } catch (err) {
-      } finally {
-      }
-    };
-    loadUsers();
-  }, []);
+    if (searchTerm.length > 2) {
+      dispatch(searchUsers(searchTerm));
+    }
+  }, [searchTerm, dispatch]);
   useEffect(() => {
     if (mode === "edit" && data) {
       form.setFieldsValue({
@@ -41,6 +40,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, data, setMode }) => {
         isEnabled: data.isEnabled,
       });
       setIsEnabled(data.isEnabled);
+      setSearchTerm(data.assignedUserName || "");
     }
   }, [mode, data, form]);
 
@@ -62,6 +62,16 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, data, setMode }) => {
     );
     form.resetFields();
     setMode("view");
+  };
+
+  const handleFormFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+    dispatch(
+      setMessage({
+        content: "Please fill in the required fields correctly.",
+        type: "error",
+      })
+    );
   };
 
   return (
@@ -99,7 +109,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, data, setMode }) => {
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", padding: "30px 100px" }}>
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          onFinishFailed={handleFormFailed}
+        >
           <Form.Item
             label="Task Name"
             name="taskName"
@@ -134,19 +149,24 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, data, setMode }) => {
             ]}
           >
             <Select
-              placeholder="Select a user"
               showSearch
-              optionFilterProp="label"
-              filterOption={(input, option) =>
-                option
-                  ? option.label.toLowerCase().includes(input.toLowerCase())
-                  : false
+              style={{ width: "100%" }}
+              placeholder="Select a user"
+              optionFilterProp="children"
+              value={form.getFieldValue("assignedUser")}
+              onChange={(value) => form.setFieldsValue({ assignedUser: value })}
+              onSearch={(value) => setSearchTerm(value)}
+              filterOption={false}
+              notFoundContent={
+                loading ? <Spin size="small" /> : error || "No users found"
               }
-              options={users.map((user) => ({
-                value: user._id,
-                label: `${user.firstName} ${user.lastName}`,
-              }))}
-            ></Select>
+            >
+              {users.map((user: User) => (
+                <Option key={user._id} value={user._id}>
+                  {user.firstName} {user.lastName}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item
             label="Is Enabled"

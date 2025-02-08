@@ -70,6 +70,7 @@ module.exports = {
         "./taskSlice": "./src/store/slices/taskSlice",
         "./userSlice": "./src/store/slices/userSlice",
         "./messageSlice": "./src/store/slices/messageSlice",
+        "./userSearchSlice": "./src/store/slices/userSearchSlice",
         "./taskInterface": "./src/interfaces/taskInterface",
         "./userInterface": "./src/interfaces/userInterface",
         "./globalTypes": "./src/interfaces/globalTypes",

@@ -15,11 +15,16 @@ const initialState: AuthState = {
 
 if (initialState.token) {
   try {
-    const decoded = jwtDecode<{ email: string; role: string }>(
+    const decoded = jwtDecode<{ email: string; role: string; exp: number }>(
       initialState.token
     );
-    initialState.user = decoded;
-    initialState.isAuthenticated = true;
+
+    if (decoded.exp * 1000 < Date.now()) {
+      localStorage.removeItem("token");
+    } else {
+      initialState.user = decoded;
+      initialState.isAuthenticated = true;
+    }
   } catch {
     localStorage.removeItem("token");
   }

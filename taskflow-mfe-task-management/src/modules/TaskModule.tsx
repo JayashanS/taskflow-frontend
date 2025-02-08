@@ -3,7 +3,7 @@ import useAuth from "host/useAuth";
 import TaskTable from "../components/TaskTable";
 import TaskTable_User from "../components/TaskTable_User";
 import TaskForm from "../components/TaskForm";
-import { Mode } from "../interfaces/globaleTypes";
+import { Mode } from "../interfaces/globalTypes";
 import { Task } from "host/taskInterface";
 
 const TaskPage: React.FC = () => {

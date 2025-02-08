@@ -3,11 +3,16 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store/store";
 import { createUser, editUser } from "../store/slices/userSlice";
 import { setMessage } from "../store/slices/messageSlice";
-import { Form, Input, Button, Select, message } from "antd";
-import { ArrowLeftOutlined, PushpinOutlined } from "@ant-design/icons";
+import { Form, Input, Button, Select } from "antd";
+import {
+  ArrowLeftOutlined,
+  PushpinOutlined,
+  InfoCircleOutlined,
+} from "@ant-design/icons";
 import { UserFormProps } from "../interfaces/userInterface";
 import AddressPicker from "./AddressPicker";
 import { isValidPhoneNumber } from "libphonenumber-js";
+import useCheckEmail from "../hooks/useCheckEmail";
 
 const roles = ["admin", "user"];
 
@@ -23,6 +28,7 @@ const UserForm: React.FC<UserFormProps> = ({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedAddress, setSelectedAddress] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const { emailStatus, checkEmail } = useCheckEmail();
 
   useEffect(() => {
     if (mode === "edit" && data) {
@@ -46,6 +52,15 @@ const UserForm: React.FC<UserFormProps> = ({
   };
 
   const handleSubmit = async (values: any) => {
+    if (!emailStatus.isValid) {
+      dispatch(
+        setMessage({
+          content: emailStatus.message,
+          type: "error",
+        })
+      );
+      return;
+    }
     if (!isValidPhoneNumber(phoneNumber)) {
       dispatch(
         setMessage({
@@ -89,6 +104,16 @@ const UserForm: React.FC<UserFormProps> = ({
     setMode("view");
   };
 
+  const handleFormFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+    dispatch(
+      setMessage({
+        content: "Please fill in the required fields correctly.",
+        type: "error",
+      })
+    );
+  };
+
   const handleAddressButtonClick = () => {
     setIsModalOpen(true);
   };
@@ -99,6 +124,10 @@ const UserForm: React.FC<UserFormProps> = ({
 
   const handlePhoneNumberChange = (value: string) => {
     setPhoneNumber(value);
+  };
+
+  const handleEmailChange = (email: string) => {
+    checkEmail(email);
   };
   return (
     <div
@@ -135,7 +164,12 @@ const UserForm: React.FC<UserFormProps> = ({
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", padding: " 30px 100px" }}>
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          onFinishFailed={handleFormFailed}
+        >
           <Form.Item
             label="First Name"
             name="firstName"
@@ -163,7 +197,7 @@ const UserForm: React.FC<UserFormProps> = ({
               },
             ]}
           >
-            <Input />
+            <Input onChange={(e) => handleEmailChange(e.target.value)} />
           </Form.Item>
           <Form.Item
             label="Mobile Number"
@@ -211,7 +245,14 @@ const UserForm: React.FC<UserFormProps> = ({
           </Form.Item>
 
           {mode === "create" && (
-            <Form.Item label="Generated Password">
+            <Form.Item
+              label="Generated Password"
+              tooltip={{
+                title:
+                  "This is an auto-generated password. User can reset it on his first login, so no need to remember this.",
+                icon: <InfoCircleOutlined />,
+              }}
+            >
               <Input.Password value={password} readOnly />
             </Form.Item>
           )}
