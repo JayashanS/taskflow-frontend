@@ -16,6 +16,7 @@ import {
   Spin,
 } from "antd";
 import { updatePassword } from "../services/userService";
+import AnimatedLogo from "../assets/AnimatedLogo2";
 
 const { Title, Text } = Typography;
 
@@ -136,7 +137,7 @@ const WelcomePage: React.FC = () => {
       <Result
         status="error"
         title="Password Update Failed"
-        subTitle="There was an issue updating your password. Please try again."
+        subTitle="There was an issue updating your password. Please contact your Task Flow Administrator and request a new OTP."
         extra={[
           <Button type="primary" key="retry" onClick={handleUpdatePassword}>
             Retry
@@ -157,10 +158,11 @@ const WelcomePage: React.FC = () => {
         padding: "20px",
       }}
     >
-      <Title level={3} style={{ marginBottom: "0px" }}>
+      <AnimatedLogo />
+      <Title level={3} style={{ marginTop: "30px" }}>
         Welcome to Task Flow!
       </Title>
-      <Text style={{ marginBottom: "50px", color: "#b3b3b3" }}>
+      <Text style={{ marginBottom: "0px", color: "#b3b3b3" }}>
         Please update your password to continue...
       </Text>
 
@@ -177,7 +179,7 @@ const WelcomePage: React.FC = () => {
             )}
           </Tooltip>
         }
-        style={{ width: "100%", maxWidth: "300px", marginBottom: "8px" }}
+        style={{ width: "100%", maxWidth: "300px", marginTop: "20px" }}
         value={password}
         onChange={handlePasswordChange}
       />
@@ -204,7 +206,7 @@ const WelcomePage: React.FC = () => {
             </Tooltip>
           )
         }
-        style={{ width: "100%", maxWidth: "300px", marginBottom: "8px" }}
+        style={{ width: "100%", maxWidth: "300px", marginTop: "16px" }}
         value={confirmPassword}
         onChange={handleConfirmPasswordChange}
       />
@@ -218,7 +220,7 @@ const WelcomePage: React.FC = () => {
         size="large"
         type="primary"
         htmlType="submit"
-        style={{ width: "100%", maxWidth: "300px" }}
+        style={{ width: "100%", maxWidth: "300px", marginTop: "16px" }}
         onClick={handleUpdatePassword}
       >
         Update Password

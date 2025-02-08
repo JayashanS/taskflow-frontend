@@ -37,12 +37,12 @@ const UserTable: React.FC<UserTableProps> = ({ setMode, setData }) => {
           ).unwrap();
         }
       } catch (error: any) {
-        dispatch(
-          setMessage({
-            content: error.message || "An error occurred",
-            type: "error",
-          })
-        );
+        // dispatch(
+        //   setMessage({
+        //     content: error.message || "An error occurred",
+        //     type: "error",
+        //   })
+        // );
       }
     };
 
@@ -160,28 +160,31 @@ const UserTable: React.FC<UserTableProps> = ({ setMode, setData }) => {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      width: 250,
     },
     {
       title: "Mobile Number",
       dataIndex: "mobileNumber",
       key: "mobileNumber",
+      width: 150,
     },
     {
       title: "Address",
       dataIndex: "address",
       key: "address",
+      width: 200,
     },
     {
       title: "Role",
       dataIndex: "role",
       key: "role",
-      width: 70,
+      width: 90,
     },
     {
       title: "Enabled",
       dataIndex: "isEnabled",
       key: "isEnabled",
-      width: 70,
+      width: 90,
       render: (isEnabled: boolean, record: User) => (
         <Switch
           checked={isEnabled}
@@ -263,7 +266,7 @@ const UserTable: React.FC<UserTableProps> = ({ setMode, setData }) => {
         loading={loading}
         onChange={handleTableChange}
       />
-      {error && <div style={{ color: "red" }}>{error}</div>}
+      {/* {error && <div style={{ color: "red" }}>{error}</div>} */}
     </div>
   );
 };

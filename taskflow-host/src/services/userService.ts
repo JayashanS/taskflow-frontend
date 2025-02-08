@@ -1,11 +1,12 @@
 import axios from "axios";
+import axiosInstance from "./axiosInstance";
 import { User } from "../interfaces/userInterface";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const fetchUsersAPI = async (page: number, limit: number) => {
-  const response = await axios.get(
-    `${API_URL}/users/all-from?page=${page}&limit=${limit}`
+  const response = await axiosInstance.get(
+    `/users/all-from?page=${page}&limit=${limit}`
   );
   return {
     users: response.data.users,
@@ -15,34 +16,34 @@ export const fetchUsersAPI = async (page: number, limit: number) => {
 
 export const createUserAPI = async (user: Omit<User, "_id">) => {
   console.log(JSON.stringify(user));
-  const response = await axios.post(`${API_URL}/users/`, user);
+  const response = await axiosInstance.post(`/users/`, user);
   return response.data;
 };
 
 export const updateUserAPI = async (user: User) => {
-  const response = await axios.put(`${API_URL}/users/update/${user._id}`, user);
+  const response = await axiosInstance.put(`/users/update/${user._id}`, user);
   return response.data;
 };
 
 export const deleteUserAPI = async (userId: string) => {
-  const response = await axios.delete(`${API_URL}/users/delete/${userId}`);
+  const response = await axiosInstance.delete(`/users/delete/${userId}`);
   return response.data;
 };
 
 export const inviteUserAPI = async (email: string) => {
-  const response = await axios.post(`${API_URL}/users/invite`, { email });
+  const response = await axiosInstance.post(`/users/invite`, { email });
   return response.data;
 };
 
 export const searchUsersAPI = async (searchTerm: string) => {
-  const response = await axios.get(`${API_URL}/users/filter`, {
+  const response = await axiosInstance.get(`/users/filter`, {
     params: { searchTerm },
   });
   return response.data;
 };
 
 export const toggleUserStatusAPI = async (userId: string) => {
-  const response = await axios.post(`${API_URL}/users/toggle/${userId}`);
+  const response = await axiosInstance.post(`/users/toggle/${userId}`);
   return response.data;
 };
 export const updatePassword = async (
@@ -74,7 +75,7 @@ export const updatePassword = async (
 };
 
 export const searchUserIdsAPI = async (searchTerm: string) => {
-  const response = await axios.get(`${API_URL}/users/search`, {
+  const response = await axiosInstance.get(`/users/search`, {
     params: { searchTerm },
   });
   return response.data;

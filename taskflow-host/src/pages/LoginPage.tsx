@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { loginUser } from "../services/authService";
 import { useDispatch } from "react-redux";
 import { login } from "../store/slices/authSlice";
+import { setMessage } from "../store/slices/messageSlice";
 import {
   UserOutlined,
   LockOutlined,
@@ -9,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import { Input, Button, Tooltip, notification, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
-import AnimatedLogo from "../assets/AnimatedLogo";
+import AnimatedLogo from "../assets/AnimatedLogo2";
 
 const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -17,7 +18,7 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { Text } = Typography;
+  const { Title } = Typography;
 
   const handleLogin = async () => {
     setLoading(true);
@@ -25,9 +26,20 @@ const LoginPage: React.FC = () => {
       const token = await loginUser(email, password);
 
       dispatch(login(token));
-
+      dispatch(
+        setMessage({
+          content: "Login Successfull. Welcome!",
+          type: "success",
+        })
+      );
       window.location.href = "/";
     } catch (error: any) {
+      dispatch(
+        setMessage({
+          content: `Login Faild. ${error.message}`,
+          type: "error",
+        })
+      );
       notification.error({
         message: "Login Failed",
         description: error.message,
@@ -47,24 +59,15 @@ const LoginPage: React.FC = () => {
         padding: "20px",
       }}
     >
-      <div
+      <AnimatedLogo />
+      <Title
+        level={3}
         style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
+          marginTop: "30px",
         }}
       >
-        <AnimatedLogo />
-        <Text
-          style={{
-            fontSize: "24px",
-            fontWeight: "bold",
-            marginLeft: "10px",
-          }}
-        >
-          Task Flow
-        </Text>
-      </div>
+        Task Flow
+      </Title>
 
       <Input
         size="large"
