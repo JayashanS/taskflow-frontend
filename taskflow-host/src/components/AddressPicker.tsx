@@ -41,7 +41,7 @@ const GoogleMap: React.FC<AddressPickerProps> = ({
   };
 
   useEffect(() => {
-    if (!open) return; // Only initialize map when the modal is open
+    if (!open) return;
 
     const googleLayer = new TileLayer({
       source: new XYZ({

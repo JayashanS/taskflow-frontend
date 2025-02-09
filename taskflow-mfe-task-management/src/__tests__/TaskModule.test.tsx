@@ -1,4 +1,3 @@
-// src/pages/__tests__/TaskPage.test.tsx
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import TaskPage from "../modules/TaskModule";
@@ -6,7 +5,7 @@ import useAuth from "host/useAuth";
 import { Task } from "host/taskInterface";
 import { Mode } from "../interfaces/globalTypes";
 
-// Mock sample task data
+
 const mockTask: Task = {
   _id: "1",
   taskName: "Test Task",
@@ -17,7 +16,6 @@ const mockTask: Task = {
   isEnabled: true,
 };
 
-// Mock the components
 jest.mock("../components/TaskTable", () => {
   return function MockTaskTable({
     setMode,
@@ -86,7 +84,6 @@ jest.mock("../components/TaskForm", () => {
   };
 });
 
-// Mock the useAuth hook
 jest.mock("host/useAuth");
 
 describe("TaskPage", () => {
