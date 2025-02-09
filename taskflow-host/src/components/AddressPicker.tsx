@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Input } from "antd";
-//import "ol/ol.css";
+import "ol/ol.css";
 import { Map } from "ol";
 import TileLayer from "ol/layer/Tile";
 import { XYZ } from "ol/source";

@@ -1,0 +1,15 @@
+jest.mock("ol", () => ({
+  Map: jest.fn(),
+  TileLayer: jest.fn(),
+  XYZ: jest.fn(),
+  View: jest.fn(),
+  fromLonLat: jest.fn().mockReturnValue([79.9, 6.9271]),
+  toLonLat: jest.fn().mockReturnValue([79.9, 6.9271]),
+  Point: jest.fn(),
+  Feature: jest.fn(),
+  VectorLayer: jest.fn(),
+  VectorSource: jest.fn(),
+  CircleStyle: jest.fn(),
+  Fill: jest.fn(),
+  Style: jest.fn(),
+}));

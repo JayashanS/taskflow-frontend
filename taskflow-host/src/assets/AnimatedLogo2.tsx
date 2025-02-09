@@ -2,28 +2,28 @@ import React from "react";
 
 const AnimatedSVG = () => {
   const styles = `
-.animated-svg path {
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  animation-timing-function: ease-in-out;
-}
+    .animated-svg path {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+        animation-timing-function: ease-in-out;
+    }
 
-.path-n {
-  animation: draw 1.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
-}
+    .path-n {
+        animation: draw 1.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+    }
 
-.path-m {
-  animation: draw 1.5s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate;
-}
+    .path-m {
+        animation: draw 1.5s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate;
+    }
 
-@keyframes draw {
-  from {
-    stroke-dashoffset: 100;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
+    @keyframes draw {
+        from {
+            stroke-dashoffset: 100;
+        }
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
 `;
 
   return (
