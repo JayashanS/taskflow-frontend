@@ -11,7 +11,7 @@ import { Input, DatePicker, Table, Switch, Button, Popconfirm } from "antd";
 import { ColumnType } from "antd/es/table";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import moment, { Moment } from "moment";
-import { Task, TaskTableProps } from "host/taskInterface";
+import { Task, TaskTableProps } from "../interfaces/taskInterface";
 
 const TaskTable: React.FC<TaskTableProps> = ({ setMode, setData }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -53,24 +53,23 @@ const TaskTable: React.FC<TaskTableProps> = ({ setMode, setData }) => {
     setMode("edit");
     setData(user);
   };
-  const handleDelete = (taskId: string) => {
-    dispatch(deleteTask(taskId))
-      .then(() => {
-        dispatch(
-          setMessage({
-            content: "Task deleted successfully!",
-            type: "success",
-          })
-        );
-      })
-      .catch(() => {
-        dispatch(
-          setMessage({
-            content: "Failed to delete task",
-            type: "error",
-          })
-        );
-      });
+  const handleDelete = async (taskId: string) => {
+    try {
+      await dispatch(deleteTask(taskId));
+      dispatch(
+        setMessage({
+          content: "Task deleted successfully!",
+          type: "success",
+        })
+      );
+    } catch (error) {
+      dispatch(
+        setMessage({
+          content: "Failed to delete task",
+          type: "error",
+        })
+      );
+    }
   };
 
   const handleToggleStatus = async (taskId: string) => {
@@ -148,6 +147,7 @@ const TaskTable: React.FC<TaskTableProps> = ({ setMode, setData }) => {
             icon={<EditOutlined />}
             style={{ marginRight: "10px" }}
             onClick={() => handleEdit(record)}
+            data-testid="editButton"
           />
           <Popconfirm
             title="Are you sure you want to delete this task?"

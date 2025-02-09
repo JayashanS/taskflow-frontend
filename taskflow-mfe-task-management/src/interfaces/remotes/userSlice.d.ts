@@ -42,6 +42,5 @@ declare module "host/userSlice" {
     PayloadAction<{ userId: string; isEnabled: boolean }>
   >;
 
-  // Declare the reducer function
   export default function userReducer(state: UserState, action: any): UserState;
 }

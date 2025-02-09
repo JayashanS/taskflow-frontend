@@ -6,7 +6,7 @@ import { searchUsers, resetSearchState } from "host/userSearchSlice";
 import { setMessage } from "host/messageSlice";
 import { Form, Input, Button, DatePicker, Switch, Select, Spin } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { TaskFormProps } from "host/taskInterface";
+import { TaskFormProps } from "../interfaces/taskInterface";
 import { User } from "../interfaces/userInterface";
 import dayjs from "dayjs";
 import weekday from "dayjs/plugin/weekday";
@@ -176,7 +176,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, data, setMode }) => {
             <Switch onChange={setIsEnabled} checked={isEnabled} />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ width: "100%" }}
+              data-testid={mode === "create" ? "147" : "updateButton"}
+            >
               {mode === "create" ? "Create Task" : "Update Task"}
             </Button>
           </Form.Item>

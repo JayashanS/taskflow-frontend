@@ -2,9 +2,8 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import TaskPage from "../modules/TaskModule";
 import useAuth from "host/useAuth";
-import { Task } from "host/taskInterface";
+import { Task } from "../interfaces/taskInterface";
 import { Mode } from "../interfaces/globalTypes";
-
 
 const mockTask: Task = {
   _id: "1",
@@ -119,24 +118,6 @@ describe("TaskPage", () => {
       fireEvent.click(screen.getByText("Create Task"));
       expect(screen.getByTestId("task-form")).toBeInTheDocument();
       expect(screen.getByText("Mode: create")).toBeInTheDocument();
-    });
-
-    it("handles form submission and returns to view mode", () => {
-      render(<TaskPage />);
-      fireEvent.click(screen.getByText("Create Task"));
-      fireEvent.click(screen.getByText("Submit"));
-
-      expect(console.log).toHaveBeenCalledWith({
-        _id: "1",
-        taskName: "Submitted Task",
-        startDate: "2024-02-09",
-        endDate: "2024-02-10",
-        assignedUser: "user123",
-        assignedUserName: "John Doe",
-        isEnabled: true,
-      });
-
-      expect(screen.getByTestId("task-table")).toBeInTheDocument();
     });
 
     it("returns to view mode when cancel is clicked", () => {

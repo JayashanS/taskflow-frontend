@@ -19,7 +19,7 @@ import {
 } from "antd";
 import { ColumnType } from "antd/es/table";
 import moment, { Moment } from "moment";
-import { Task } from "host/taskInterface";
+import { Task } from "../interfaces/taskInterface";
 
 const TasksPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

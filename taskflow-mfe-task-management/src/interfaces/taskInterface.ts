@@ -27,5 +27,4 @@ export interface TaskFormProps {
   mode: Mode;
   data?: Task;
   setMode: (mode: Mode) => void;
-  onSubmit: (data: any) => void;
 }
