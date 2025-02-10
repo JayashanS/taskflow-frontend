@@ -36,14 +36,10 @@ const LoginPage: React.FC = () => {
     } catch (error: any) {
       dispatch(
         setMessage({
-          content: `Login Faild. ${error.message}`,
+          content: `Login Failed.`,
           type: "error",
         })
       );
-      notification.error({
-        message: "Login Failed",
-        description: error.message,
-      });
     } finally {
       setLoading(false);
     }

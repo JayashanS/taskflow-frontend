@@ -38,8 +38,6 @@ module.exports = {
       filename: "remoteEntry.js",
       exposes: {
         "./TaskModule": "./src/modules/TaskModule",
-        "./TaskTable2": "./src/components/TaskTable",
-        "./TaskForm2": "./src/components/TaskForm",
       },
       remotes: {
         host: "host@http://localhost:4000/remoteEntry.js",
