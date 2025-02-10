@@ -26,11 +26,11 @@ Both applications are contained within the same repository.
 1. Clone the repository:
 
    ```bash
-   git clone <repo-url>
-   cd <repository-name>
+   git clone https://github.com/JayashanS/taskflow-frontend.git
+   cd taskflow-frontend
    ```
 
----
+
 
 ### 1. Host (Main Application)
 
