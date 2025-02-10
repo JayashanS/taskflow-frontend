@@ -47,8 +47,13 @@ Both applications are contained within the same repository.
    ```bash
    npm install
    ```
+3. Create a .env file in the root directory and include following
+   ```bash
+   REACT_APP_API_URL=http://localhost:5000/api || or your backend URL
+   REACT_APP_GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY
+   ```
 
-3. Run the application in development mode:
+4. Run the application in development mode:
 
    ```bash
    npm start
@@ -56,7 +61,7 @@ Both applications are contained within the same repository.
 
    The Host application will be available at `http://localhost:4000/`.
 
-4. **ModuleFederationPlugin** in the Host application is set up to consume the task management module from `task-management` and expose shared components such as Redux slices and custom hooks.
+5. **ModuleFederationPlugin** in the Host application is set up to consume the task management module from `task-management` and expose shared components such as Redux slices and custom hooks.
 
 
 
